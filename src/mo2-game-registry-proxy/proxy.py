@@ -2,6 +2,9 @@
 Copyright (c) Cutleast
 """
 
+from __future__ import annotations
+
+import ctypes
 import winreg
 from pathlib import Path
 from typing import Optional, cast
@@ -139,7 +142,7 @@ class Proxy:
 
     def set_reg_value(self, value: str) -> None:
         """
-        Sets the current registry value for the game folder.
+        Sets the current registry value for the game folder using elevated rights.
 
         Args:
             value (str): The new value for the registry key.
@@ -147,18 +150,36 @@ class Proxy:
 
         reg_key: Optional[tuple[int, str, str]] = self.__get_game_reg_key()
         if reg_key is None:
+            qCritical("No registry key defined for this game.")
             return
 
         key, sub_key, value_name = reg_key
 
-        try:
-            with winreg.CreateKey(key, sub_key) as hkey:
-                winreg.SetValue(hkey, value_name, winreg.REG_SZ, value)
+        if key != winreg.HKEY_LOCAL_MACHINE:
+            qCritical("Only HKLM writes are supported for elevation.")
+            return
 
-            qDebug(f"Registry value set to '{value}'.")
+        full_path = f"HKLM\\{sub_key}"
+        # Escape quotes for safety
+        safe_value = value.replace('"', '\\"')
+
+        # Build reg.exe argument string
+        args = f'add "{full_path}" /v "{value_name}" /d "{safe_value}" /f /reg:32'
+
+        try:
+            qDebug(f"Requesting elevated registry write: reg {args}")
+
+            # Use ShellExecuteW to start reg.exe with "runas" (Admin rights)
+            ShellExecuteW = ctypes.windll.shell32.ShellExecuteW
+            ret = int(ShellExecuteW(None, "runas", "reg.exe", args, None, 1))
+
+            if ret <= 32:
+                qCritical(f"Failed to start reg.exe (ShellExecute returned {ret}).")
+            else:
+                qDebug("Successfully requested elevation for registry update.")
 
         except Exception as ex:
-            qCritical(f"Error writing to registry: {ex}")
+            qCritical(f"Error launching elevated registry write: {ex}")
 
     def get_reg_value(self) -> Optional[Path]:
         """
