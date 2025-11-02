@@ -3,7 +3,7 @@ Copyright (c) Cutleast
 """
 
 from pathlib import Path
-from typing import cast, override
+from typing import override
 
 import mobase  # pyright: ignore[reportMissingModuleSource]
 from PyQt6.QtGui import QIcon
@@ -17,7 +17,7 @@ class GameRegistryProxy(mobase.IPluginTool):
     """
 
     NAME: str = "Game-Registry-Proxy"
-    ENABLED_SETTING: str = "enabled"
+    ENABLED_SETTING: str = "enableProxy"
     DISABLED_APPS_SETTING: str = "disabled_apps"
 
     __organizer: mobase.IOrganizer
@@ -70,11 +70,10 @@ class GameRegistryProxy(mobase.IPluginTool):
         return mobase.VersionInfo(1, 0, 0, mobase.ReleaseType.FINAL)
 
     def isActive(self) -> bool:
-        return cast(
-            bool,
+        return bool(
             self.__organizer.pluginSetting(
                 self.name(), GameRegistryProxy.ENABLED_SETTING
-            ),
+            )
         )
 
     @override

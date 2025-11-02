@@ -205,11 +205,10 @@ class Proxy:
     def __is_active(self) -> bool:
         from .main import GameRegistryProxy
 
-        return cast(
-            bool,
+        return bool(
             self.__organizer.pluginSetting(
                 GameRegistryProxy.NAME, GameRegistryProxy.ENABLED_SETTING
-            ),
+            )
         )
 
     def __get_disabled_apps(self) -> list[str]:
