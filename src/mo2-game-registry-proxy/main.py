@@ -99,9 +99,9 @@ class GameRegistryProxy(mobase.IPluginTool):
     @override
     def icon(self) -> QIcon:
         if self.isActive():
-            return QIcon(str(self.__icon_path / "green.ico"))
+            return QIcon(str(self.__icon_path / "on.png"))
         else:
-            return QIcon(str(self.__icon_path / "red.ico"))
+            return QIcon(str(self.__icon_path / "off.png"))
 
     @override
     def tooltip(self) -> str:
