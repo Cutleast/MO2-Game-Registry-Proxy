@@ -1,0 +1,45 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"extensions": {
+		"recommendations": [
+			"njpwerner.autodocstring",
+			"ms-python.vscode-pylance",
+			"ms-python.python",
+			"charliermarsh.ruff",
+		]
+	},
+	"settings": {
+		"editor.formatOnSave": true,
+		"[python]": {
+			"editor.codeActionsOnSave": {
+				"source.organizeImports.ruff": "explicit",
+			},
+		},
+		"xml.format.maxLineWidth": 0,
+		"python.analysis.autoFormatStrings": true,
+		"python.analysis.autoImportCompletions": true,
+		"python.analysis.diagnosticMode": "workspace",
+		"python.analysis.generateWithTypeAnnotation": true,
+		"python.analysis.languageServerMode": "full",
+		"python.analysis.typeCheckingMode": "strict",
+		"python.analysis.stubPath": "stubs",
+		"git.diagnosticsCommitHook.Enabled": true,
+		"autoDocstring.startOnNewLine": true
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "debugpy",
+				"request": "launch",
+				"name": "Debug current file",
+				"program": "${file}",
+				"cwd": "${workspaceFolder}",
+			}
+		]
+	}
+}
